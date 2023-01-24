@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Write a Bash script that sets up your web servaers for the deployment of web_static. It must:
+# A Bash script that sets up your web servaers for the deployment of web_static. It must:
 # Install Nginx if it not already installed
- apt-get update && apt-get install -y nginx
+apt-get update
+apt-get install -y nginx
+
+service nginx start
 
 # Create the folders and files if they do not already exist
 mkdir -p /data/web_static/releases/test
