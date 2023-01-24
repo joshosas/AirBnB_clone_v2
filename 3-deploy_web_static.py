@@ -11,6 +11,7 @@ from fabric.operations import run, put, sudo
 from datetime import date
 env.hosts = ['3.86.7.220', '18.234.130.0']
 
+
 def do_pack():
     timestamp = time.strftime("%Y%m%d%H%M%S")
     try:
@@ -21,8 +22,13 @@ def do_pack():
     except:
         return None
 
+
 def do_deploy(archive_path):
     """ script that distributes archive to web servers
+    All remote commands must be executed on your both web servers
+    (using env.hosts = ['<IP web-01>', 'IP web-02'] variable in your script)
+    Returns True if all operations has been done correctly,
+            otherwise returns False
     """
     if (os.path.isfile(archive_path) is False):
         return False
@@ -34,11 +40,9 @@ def do_deploy(archive_path):
         folder = ("/data/web_static/releases/" + unpack.split(".")[0])
         run("sudo mkdir -p {:s}".format(folder))
 
-        """
-        Uncompress the archive to the folder
+        """Uncompress the archive to the folder
         /data/web_static/releases/<archive filename without extension>
-        on the web server
-        """
+        on the web server"""
         run("sudo tar -xzf /tmp/{:s} -C {:s}".format(unpack, folder))
 
         """Delete the archive from the web server"""
@@ -49,12 +53,10 @@ def do_deploy(archive_path):
         """Delete the symbolic link /data/web_static/current"""
         run('sudo rm -rf /data/web_static/current')
 
-        """
-            Create a new the symbolic link
+        """Create a new the symbolic link
            /data/web_static/current on the web server, linked to the new
            version of your code
-           (/data/web_static/releases/<archive filename without extension>)
-        """
+           (/data/web_static/releases/<archive filename without extension>)"""
         run("sudo ln -s {:s} /data/web_static/current".format(folder))
         return True
     except:
@@ -68,5 +70,3 @@ def deploy():
         return deploy_now
     except:
         return False
-
-
